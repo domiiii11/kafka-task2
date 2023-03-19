@@ -1,0 +1,41 @@
+
+# 1. run ksql command:
+
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+
+# 2. Create sream.
+
+CREATE STREAM application_records
+(id VARCHAR, 
+code_gender VARCHAR, 
+flag_own_car VARCHAR, 
+flag_own_realty VARCHAR, 
+cnt_children VARCHAR, 
+amt_income_total VARCHAR, 
+name_income_type VARCHAR, 
+name_education_type VARCHAR, 
+name_family_status VARCHAR, 
+name_housing_type VARCHAR, 
+days_birth VARCHAR, 
+days_employed VARCHAR, 
+flag_mobil VARCHAR, 
+flag_work_phone VARCHAR, 
+flag_phone VARCHAR, 
+flag_email VARCHAR, 
+occupation_type VARCHAR, 
+cnt_fam_members VARCHAR 
+)
+  WITH (KAFKA_TOPIC='application_records',
+        VALUE_FORMAT='DELIMITED',
+	KEY='id');
+
+# 3. Create new stream.
+
+CREATE STREAM non_duplicate_application_records AS
+SELECT *
+FROM application_records
+PARTITION BY id
+HAVING COUNT(*) = 1;
+
+
+show streams;
